@@ -1,0 +1,62 @@
+@startuml 04-uusi_muistiinpano
+skinparam style strictuml
+skinparam ParticipantPadding 20
+
+note over selain
+Käyttäjä on sivulla 
+https://studies.cs.helsinki.fi/exampleapp/notes,
+syöttää lomakkeen input-kenttään tekstiä ja
+painaa 'Save'-painiketta
+end note
+
+selain -> palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+
+note left 
+HTTP POST-pyynnön runko: 
+"note=<käyttäjän syöte>"
+end note
+
+note over palvelin
+Palvelin tallentaa käyttäjän lähettämän 
+muistiinpanon ja sen aikaleiman
+end note
+
+palvelin --> selain: 302 Found: uudelleenohjaus polkuun '/exampleapp/notes'
+
+note over selain
+Selain käsittelee uudelleenohjauspyynnön ja
+hakee uudelleen '/exampleapp/notes'-polun sisällön
+end note
+
+selain -> palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+palvelin --> selain: 200 OK: 'notes' HTML-sivu
+
+selain -> palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+palvelin --> selain: 200 OK: 'main.css'
+
+selain -> palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+palvelin --> selain: 200 OK: 'main.js'
+
+note over selain
+Selain alkaa suorittaa 'main.js' skriptiä, joka
+pyytää 'data.json'-tiedoston palvelimelta
+end note
+
+selain -> palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+palvelin -> selain: 200 OK: 'data.json'
+
+note right
+data.json:
+[   {   "content": "hello",
+        "date": "2022-04-02T05:39:13.214Z"
+    }, ... ]
+end note
+
+note over selain
+Selain suorittaa 'main.js'-skriptistä 
+tapahtumakäsittelijän, joka
+lisää sivulle listan 'data.json' 
+content-attribuuttien sisällöstä
+end note
+
+@enduml
