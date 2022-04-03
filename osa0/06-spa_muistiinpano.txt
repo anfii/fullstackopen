@@ -1,0 +1,38 @@
+@startuml 06-spa_muistiinpano
+skinparam style strictuml
+skinparam ParticipantPadding 20
+
+note over selain
+Käyttäjä syöttää tekstiä 'spa'-sivun
+input-kenttään ja painaa 'Save'-painiketta
+end note
+
+note over selain
+Skriptissä 'spa.js' suoritetaan
+tapahtumankäsittelijä, joka lisää
+muistiinpanon lokalisti käyttäjän
+näkemälle sivulle. Lisäksi 
+muistiinpano lähetetään palvelimelle
+POST-pyynnöllä.
+end note
+
+selain -> palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+note left 
+HTTP POST-pyynnön runko: 
+{   "content":"<käyttäjän syöte>",
+    "date":"2022-04-03T10:02:16.298Z" }
+end note
+
+note over palvelin
+Palvelin tallentaa vastaanotetun muistiinpanon
+end note
+
+palvelin --> selain: 201 Created: vastauksen runko: {"message":"note created"}
+
+note left
+Muiden käyttäjien palvelimelle lähettämiä 
+muistiinpanoja ei haeta muuten kuin sivun 
+latausvaiheessa
+end note
+
+@enduml
